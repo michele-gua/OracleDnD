@@ -1,0 +1,29 @@
+# Binary
+dnd-dm
+dnd-dm.exe
+/cmd/server/server
+
+# Build artifacts
+*.o
+*.a
+*.so
+dist/
+
+# Go toolchain
+vendor/
+
+# Local campaign data (user-generated, not committed)
+data/campaigns/
+
+# Config with local paths (users copy from config.example.json)
+config.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
