@@ -1,6 +1,6 @@
 # Binary
 dnd-dm
-OracleDnD.exe
+dnd-dm.exe
 /cmd/server/server
 
 # Build artifacts

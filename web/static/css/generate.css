@@ -1,0 +1,267 @@
+/* ═══════════════════════════════════════════════
+   Generate Campaign — page styles
+═══════════════════════════════════════════════ */
+
+.generate-main {
+  position: relative;
+  z-index: 2;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ─── Header ─────────────────────────────────── */
+.gen-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.gen-emblem {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: .75rem;
+  filter: drop-shadow(0 0 12px rgba(201,149,42,.5));
+}
+
+.gen-emblem.spinning {
+  display: inline-block;
+  animation: spin 3s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.gen-title {
+  font-family: var(--font-title);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: .08em;
+  margin-bottom: .4rem;
+}
+
+.gen-subtitle {
+  font-style: italic;
+  color: var(--bone-dim);
+  font-size: .95rem;
+}
+
+/* ─── Info box ───────────────────────────────── */
+.gen-info-box {
+  background: var(--parchment-2);
+  border: 1px solid var(--gold-dark);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.gen-info-box > p:first-child {
+  font-family: var(--font-title);
+  font-size: .8rem;
+  letter-spacing: .06em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: .85rem;
+}
+
+.gen-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  margin-bottom: 1rem;
+}
+.gen-features li {
+  font-size: .9rem;
+  color: var(--bone);
+  padding-left: .25rem;
+}
+
+.gen-time-note {
+  font-size: .78rem;
+  color: var(--bone-dim);
+  font-style: italic;
+  border-top: 1px solid var(--parchment-3);
+  padding-top: .75rem;
+  margin-top: .5rem;
+}
+
+/* ─── Model selector ─────────────────────────── */
+.gen-model-selector {
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ─── Start button ───────────────────────────── */
+.gen-start-btn {
+  width: 100%;
+  padding: .9rem 1.5rem !important;
+  font-size: 1rem !important;
+  letter-spacing: .1em !important;
+}
+
+.gen-skip-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: .8rem;
+  color: var(--bone-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+.gen-skip-link:hover { color: var(--gold); }
+
+/* ─── Phase steps ────────────────────────────── */
+.phase-steps {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  margin-bottom: 1.75rem;
+}
+
+.phase-step {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: var(--parchment-2);
+  border: 1px solid var(--parchment-3);
+  border-radius: var(--radius);
+  padding: .7rem 1rem;
+  transition: border-color .3s;
+}
+.phase-step.active  { border-color: var(--gold); }
+.phase-step.done    { border-color: var(--jade); opacity: .75; }
+
+.phase-icon  { font-size: 1.1rem; flex-shrink: 0; }
+.phase-label { flex: 1; font-size: .88rem; color: var(--bone); }
+
+.phase-state {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  padding: .2rem .5rem;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.phase-state.idle    { color: var(--ash); }
+.phase-state.running { color: var(--gold-light); animation: pulse 1.2s ease-in-out infinite; }
+.phase-state.done    { color: var(--jade-light); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* ─── Progress bar ───────────────────────────── */
+.progress-wrap {
+  margin-bottom: 1.5rem;
+}
+
+.progress-bar-outer {
+  height: 6px;
+  background: var(--parchment-3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: .65rem;
+}
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  border-radius: 3px;
+  transition: width .6s ease;
+  box-shadow: 0 0 8px rgba(201,149,42,.5);
+}
+
+.progress-message {
+  text-align: center;
+  font-style: italic;
+  color: var(--bone-dim);
+  font-size: .85rem;
+  min-height: 1.4em;
+}
+
+/* ─── Token stream ───────────────────────────── */
+.token-stream-wrap {
+  background: var(--parchment-2);
+  border: 1px solid var(--parchment-3);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.token-stream {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--bone-dim);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ─── ASCII cover ────────────────────────────── */
+.ascii-cover-wrap {
+  background: var(--parchment-3);
+  border: 1px solid var(--gold-dark);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1.75rem;
+  text-align: center;
+  overflow: hidden;
+}
+.ascii-cover {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  line-height: 1.3;
+  color: var(--gold);
+  white-space: pre;
+  display: inline-block;
+  text-align: left;
+  text-shadow: 0 0 8px rgba(201,149,42,.3);
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* ─── Opening scene ──────────────────────────── */
+.opening-scene-wrap {
+  margin-bottom: 1.75rem;
+}
+.opening-label {
+  font-family: var(--font-title);
+  font-size: .82rem;
+  letter-spacing: .08em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+  margin-bottom: .75rem;
+}
+.opening-scene {
+  background: var(--parchment-2);
+  border-left: 3px solid var(--gold-dark);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 1.1rem 1.4rem;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--bone);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* ─── Done / error actions ───────────────────── */
+.done-actions {
+  display: flex;
+  gap: .85rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+.done-actions .btn-primary,
+.done-actions .btn-ghost { flex: 1; text-align: center; min-width: 140px; }
+
+.error-box {
+  background: rgba(139,26,26,.12);
+  border: 1px solid var(--crimson);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  color: #e74c3c;
+  font-style: italic;
+  margin-bottom: 1.25rem;
+}

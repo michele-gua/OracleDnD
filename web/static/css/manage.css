@@ -285,3 +285,84 @@
   .manage-nav { flex-direction: row; flex-wrap: wrap; }
   .nav-tab { flex: 1 0 auto; text-align: center; }
 }
+
+/* ─── World files (Part 3) ───────────────────── */
+.world-files {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: left;
+}
+
+.world-file-link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-family: var(--font-title);
+  font-size: .78rem;
+  letter-spacing: .06em;
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px solid var(--gold-dark);
+  padding: .45rem 1rem;
+  border-radius: var(--radius);
+  transition: background .2s;
+  width: fit-content;
+}
+.world-file-link:hover { background: rgba(201,149,42,.1); }
+
+.world-files-title {
+  font-family: var(--font-title);
+  font-size: .75rem;
+  color: var(--gold-light);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  margin-bottom: .65rem;
+}
+
+.world-file-list { display: flex; flex-direction: column; gap: .4rem; }
+
+.world-file-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .5rem .75rem;
+  background: var(--parchment-3);
+  border-radius: var(--radius);
+  font-size: .85rem;
+  color: var(--bone);
+  flex-wrap: wrap;
+}
+
+.file-badge {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--bone-dim);
+}
+
+.ascii-preview-wrap { }
+
+.ascii-preview {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  line-height: 1.3;
+  color: var(--gold);
+  background: var(--parchment-3);
+  border: 1px solid var(--gold-dark);
+  border-radius: var(--radius);
+  padding: .85rem 1rem;
+  white-space: pre;
+  overflow-x: auto;
+  text-shadow: 0 0 6px rgba(201,149,42,.25);
+}
+
+.premise-text {
+  font-style: italic;
+  color: var(--bone-dim);
+  line-height: 1.7;
+  background: var(--parchment-3);
+  padding: .85rem 1rem;
+  border-left: 3px solid var(--gold-dark);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}

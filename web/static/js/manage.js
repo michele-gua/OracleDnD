@@ -57,6 +57,64 @@ function renderAll() {
 
   renderOverview();
   renderCharacters();
+  renderWorldFiles();
+}
+
+// ─── World files tab (markdown file list) ─────────
+async function renderWorldFiles() {
+  // Show generate button in world tab if no files yet
+  const worldTab = document.getElementById('tab-world');
+  if (!worldTab) return;
+
+  const worldPlaceholder = worldTab.querySelector('.world-placeholder p');
+
+  // Check if campaign has been generated (has ascii art or last_summary)
+  if (campaign.cover_ascii || campaign.last_summary) {
+    // Campaign was generated — show links to markdown files
+    const worldWrap = worldTab.querySelector('.world-placeholder');
+    worldWrap.innerHTML = `
+      <div class="world-files">
+        <a class="world-file-link" href="/campaign/${slug}/generate" target="_self">
+          🔄 Rigenera il mondo con AI
+        </a>
+        <div class="world-file-list">
+          <h3 class="world-files-title">File generati</h3>
+          ${[
+            { file: 'campaign_overview.md', label: '📖 Panoramica campagna' },
+            { file: 'world/starting_area.md', label: '🏰 Area di partenza' },
+            { file: 'world/factions.md',      label: '⚔️ Fazioni' },
+            { file: 'world/world_timeline.md','label': '🗓 Cronologia' },
+            { file: 'world/side_quests.md',   label: '📜 Quest Hooks' },
+          ].map(f => `
+            <div class="world-file-entry">
+              <span>${f.label}</span>
+              <span class="file-badge">data/campaigns/${slug}/${f.file}</span>
+            </div>
+          `).join('')}
+        </div>
+        ${campaign.cover_ascii ? `
+        <div class="ascii-preview-wrap">
+          <h3 class="world-files-title">Copertina ASCII</h3>
+          <pre class="ascii-preview">${esc(campaign.cover_ascii)}</pre>
+        </div>` : ''}
+        ${campaign.last_summary ? `
+        <div class="premise-wrap">
+          <h3 class="world-files-title">Premessa</h3>
+          <p class="premise-text">${esc(campaign.last_summary)}</p>
+        </div>` : ''}
+      </div>
+    `;
+  } else {
+    // Not generated yet — show generate CTA
+    const worldWrap = worldTab.querySelector('.world-placeholder');
+    worldWrap.innerHTML = `
+      <div class="placeholder-icon">🌍</div>
+      <p class="placeholder-text">Il mondo non è ancora stato generato.</p>
+      <a href="/campaign/${slug}/generate" class="btn-new" style="margin-top:1rem;display:inline-block">
+        🎲 Genera il Mondo con AI
+      </a>
+    `;
+  }
 }
 
 // ─── Overview tab ────────────────────────────────

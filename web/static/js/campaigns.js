@@ -346,8 +346,8 @@ async function submitNewCampaign() {
     toast(`Campagna "${c.name}" creata!`, 'success');
     modalNew.hidden = true;
     await loadCampaigns();
-    // Redirect to manage page so AI can generate the world
-    setTimeout(() => goManage(c.slug), 800);
+    // Redirect to generate page so AI builds the world
+    setTimeout(() => { window.location.href = `/campaign/${c.slug}/generate`; }, 800);
   } catch (e) {
     toast('Errore creazione: ' + e.message, 'error');
   } finally {

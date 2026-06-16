@@ -10,6 +10,7 @@ import (
 	"github.com/dnd-dm/internal/config"
 	"github.com/dnd-dm/internal/dice"
 	"github.com/dnd-dm/internal/handlers"
+	"github.com/dnd-dm/internal/ruleset"
 	"github.com/dnd-dm/internal/session"
 )
 
@@ -26,6 +27,7 @@ func main() {
 	sessionMgr  := session.NewManager(cfg.DataDir, cfg.MaxHistoryMessages)
 	diceRoller  := dice.New()
 	campaignMgr := campaign.NewManager(cfg.DataDir)
+	rulesetMgr  := ruleset.NewManager(cfg.RulesetsDir)
 
 	deps := &handlers.Deps{
 		Cfg:      cfg,
@@ -40,25 +42,33 @@ func main() {
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 
 	// Page routes
-	mux.HandleFunc("GET /",                         pageHandler("web/templates/campaigns.html"))
-	mux.HandleFunc("GET /campaigns",                pageHandler("web/templates/campaigns.html"))
-	mux.HandleFunc("GET /campaign/{name}/manage",   pageHandler("web/templates/manage.html"))
-	mux.HandleFunc("GET /campaign/{name}/export",   pageHandler("web/templates/export.html"))
-	mux.HandleFunc("GET /import",                   pageHandler("web/templates/import.html"))
-	mux.HandleFunc("GET /character/new",            pageHandler("web/templates/character_new.html"))
-	mux.HandleFunc("GET /character/{id}",           pageHandler("web/templates/character.html"))
-	mux.HandleFunc("GET /character/import",         pageHandler("web/templates/character_import.html"))
-	mux.HandleFunc("GET /session/new",              pageHandler("web/templates/session_new.html"))
-	mux.HandleFunc("GET /session/{id}",             pageHandler("web/templates/session.html"))
+	mux.HandleFunc("GET /",                        pageHandler("web/templates/campaigns.html"))
+	mux.HandleFunc("GET /campaigns",               pageHandler("web/templates/campaigns.html"))
+	mux.HandleFunc("GET /campaign/{name}/manage",  pageHandler("web/templates/manage.html"))
+	mux.HandleFunc("GET /campaign/{name}/generate",pageHandler("web/templates/generate.html"))
+	mux.HandleFunc("GET /campaign/{name}/export",  pageHandler("web/templates/export.html"))
+	mux.HandleFunc("GET /import",                  pageHandler("web/templates/import.html"))
+	mux.HandleFunc("GET /character/new",           pageHandler("web/templates/character_new.html"))
+	mux.HandleFunc("GET /character/{id}",          pageHandler("web/templates/character.html"))
+	mux.HandleFunc("GET /character/import",        pageHandler("web/templates/character_import.html"))
+	mux.HandleFunc("GET /session/new",             pageHandler("web/templates/session_new.html"))
+	mux.HandleFunc("GET /session/{id}",            pageHandler("web/templates/session.html"))
 
 	// Campaign API
 	mux.HandleFunc("GET /api/campaign/list",                handlers.CampaignListHandler(campaignMgr))
 	mux.HandleFunc("POST /api/campaign/create",             handlers.CampaignCreateHandler(campaignMgr))
+	mux.HandleFunc("POST /api/campaign/generate",           handlers.GenerateCampaignHandler(deps, campaignMgr, rulesetMgr))
 	mux.HandleFunc("GET /api/campaign/{name}",              handlers.CampaignGetHandler(campaignMgr))
 	mux.HandleFunc("PATCH /api/campaign/{name}",            handlers.CampaignUpdateHandler(campaignMgr))
 	mux.HandleFunc("DELETE /api/campaign/{name}",           handlers.CampaignDeleteHandler(campaignMgr))
 	mux.HandleFunc("POST /api/campaign/{name}/archive",     handlers.CampaignArchiveHandler(campaignMgr))
 	mux.HandleFunc("POST /api/campaign/{name}/complete",    handlers.CampaignCompleteHandler(campaignMgr))
+	mux.HandleFunc("GET /api/campaign/{name}/files",        handlers.CampaignFilesListHandler(campaignMgr, cfg.DataDir))
+	mux.HandleFunc("GET /api/campaign/{name}/file",         handlers.CampaignFileHandler(campaignMgr, cfg.DataDir))
+
+	// Rulesets
+	mux.HandleFunc("GET /api/rulesets",          handlers.RulesetsHandler(rulesetMgr))
+	mux.HandleFunc("POST /api/ruleset/select",   handlers.RulesetSelectHandler(deps))
 
 	// AI & chat
 	mux.HandleFunc("POST /api/chat",         handlers.ChatHandler(deps))
