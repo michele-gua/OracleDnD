@@ -1,5 +1,176 @@
 <!DOCTYPE html>
 <html lang="it">
-<head><meta charset="UTF-8"><title>D&D DM — campaigns</title></head>
-<body><h1>campaigns — placeholder (Part 2)</h1></body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oracle DnD — Le tue Campagne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/campaigns.css">
+</head>
+<body>
+
+  <div class="parchment-overlay" aria-hidden="true"></div>
+  <div class="corner corner-tl" aria-hidden="true"></div>
+  <div class="corner corner-tr" aria-hidden="true"></div>
+  <div class="corner corner-bl" aria-hidden="true"></div>
+  <div class="corner corner-br" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="header-rune" aria-hidden="true">⚔</div>
+    <div class="header-center">
+      <h1 class="site-title">Oracle <span class="title-accent">DnD</span></h1>
+      <p class="site-subtitle">Il tuo Dungeon Master. Sempre pronto.</p>
+    </div>
+    <div class="header-rune" aria-hidden="true">🐉</div>
+  </header>
+
+  <div class="rune-divider" aria-hidden="true">
+    <span>᛭</span><span>᛭</span><span>᛭</span>
+  </div>
+
+  <main class="campaigns-main">
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-wrap">
+          <span class="search-icon" aria-hidden="true">⚲</span>
+          <input type="search" id="search-input" class="search-input" placeholder="Cerca campagne…" aria-label="Cerca campagne">
+        </div>
+        <div class="filter-group" role="group" aria-label="Filtra per stato">
+          <button class="filter-btn active" data-filter="all">Tutte</button>
+          <button class="filter-btn" data-filter="active">Attive</button>
+          <button class="filter-btn" data-filter="completed">Completate</button>
+          <button class="filter-btn" data-filter="archived">Archiviate</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <select class="sort-select" id="sort-select" aria-label="Ordina per">
+          <option value="recent">Ultima sessione</option>
+          <option value="name">Nome</option>
+          <option value="duration">Durata totale</option>
+          <option value="sessions">Sessioni</option>
+        </select>
+        <button class="btn-new" id="btn-new-campaign">+ Nuova Campagna</button>
+      </div>
+    </div>
+
+    <div class="campaigns-grid" id="campaigns-grid" role="list" aria-label="Campagne salvate"></div>
+
+    <div class="empty-state" id="empty-state" hidden>
+      <div class="empty-scroll" aria-hidden="true">📜</div>
+      <p class="empty-title">Nessuna campagna trovata</p>
+      <p class="empty-sub">Il libro delle cronache è vuoto. Inizia la tua prima avventura.</p>
+      <button class="btn-new" id="btn-new-empty">+ Inizia una campagna</button>
+    </div>
+
+    <div class="loading-state" id="loading-state">
+      <div class="loading-runes" aria-label="Caricamento…">
+        <span>ᚠ</span><span>ᚢ</span><span>ᚦ</span><span>ᚨ</span><span>ᚱ</span>
+      </div>
+      <p>Consultando i Piani Astrali…</p>
+    </div>
+
+  </main>
+
+  <!-- Modal: Nuova Campagna -->
+  <div class="modal-backdrop" id="modal-new" hidden role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <button class="modal-close" id="modal-close" aria-label="Chiudi">✕</button>
+      <div class="modal-header">
+        <div class="modal-rune" aria-hidden="true">⚔</div>
+        <h2 class="modal-title" id="modal-title">Forgia una Nuova Campagna</h2>
+      </div>
+      <div class="steps-indicator" aria-label="Passaggi">
+        <div class="step active" data-step="1"><span class="step-num">1</span><span class="step-label">Regolamento</span></div>
+        <div class="step-line"></div>
+        <div class="step" data-step="2"><span class="step-num">2</span><span class="step-label">Identità</span></div>
+        <div class="step-line"></div>
+        <div class="step" data-step="3"><span class="step-num">3</span><span class="step-label">Conferma</span></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="modal-step" id="step-1">
+        <p class="step-intro">Quale sistema di regole governa questo mondo?</p>
+        <div class="ruleset-grid" role="radiogroup" aria-label="Scegli il regolamento">
+          <label class="ruleset-card" tabindex="0">
+            <input type="radio" name="ruleset" value="dnd5e" checked>
+            <div class="ruleset-icon">⚔️</div>
+            <div class="ruleset-name">D&amp;D 5e</div>
+            <div class="ruleset-year">2014</div>
+            <div class="ruleset-badge">Consigliato</div>
+            <p class="ruleset-desc">Il classico. Regole bilanciate, ampia comunità, perfetto per chi inizia.</p>
+          </label>
+          <label class="ruleset-card" tabindex="0">
+            <input type="radio" name="ruleset" value="dnd5e2024">
+            <div class="ruleset-icon">🔮</div>
+            <div class="ruleset-name">D&amp;D 5e</div>
+            <div class="ruleset-year">2024</div>
+            <p class="ruleset-desc">One D&amp;D — revisione moderna con nuove classi e meccaniche aggiornate.</p>
+          </label>
+          <label class="ruleset-card" tabindex="0">
+            <input type="radio" name="ruleset" value="dnd35e">
+            <div class="ruleset-icon">📜</div>
+            <div class="ruleset-name">D&amp;D 3.5e</div>
+            <div class="ruleset-year">2003</div>
+            <p class="ruleset-desc">La versione profonda. Più crunch, più personalizzazione, più regole.</p>
+          </label>
+          <label class="ruleset-card" tabindex="0">
+            <input type="radio" name="ruleset" value="pathfinder">
+            <div class="ruleset-icon">🗡️</div>
+            <div class="ruleset-name">Pathfinder</div>
+            <div class="ruleset-year">2e</div>
+            <p class="ruleset-desc">Erede del 3.5e. Ricco di opzioni, eccellente struttura tattica.</p>
+          </label>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="modal-step" id="step-2" hidden>
+        <p class="step-intro">Dai un nome alla tua saga.</p>
+        <div class="form-group">
+          <label class="form-label" for="campaign-name">Nome della Campagna</label>
+          <input type="text" id="campaign-name" class="form-input" placeholder="es. La Maledizione di Strahd" maxlength="80" autocomplete="off">
+          <span class="form-hint">Il titolo che ricorderai nei secoli.</span>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="world-name">Nome del Mondo <span class="optional">(opzionale)</span></label>
+          <input type="text" id="world-name" class="form-input" placeholder="es. Barovia, Faerûn, Greyhawk…" maxlength="80" autocomplete="off">
+          <span class="form-hint">Il piano d'esistenza dove si svolge tutto.</span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="modal-step" id="step-3" hidden>
+        <p class="step-intro">Tutto pronto. Il DM AI genererà il mondo prima dell'inizio.</p>
+        <div class="confirm-summary" id="confirm-summary"></div>
+        <div class="confirm-note">
+          <span class="confirm-icon" aria-hidden="true">🎲</span>
+          <p>Il Dungeon Master costruirà la campagna, popolerà il mondo di NPC, fazioni e misteri. Ci vorrà qualche istante.</p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" id="modal-back" disabled>← Indietro</button>
+        <button class="btn-primary" id="modal-next">Avanti →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Elimina -->
+  <div class="modal-backdrop" id="modal-delete" hidden role="dialog" aria-modal="true" aria-labelledby="delete-title">
+    <div class="modal modal-sm">
+      <h2 class="modal-title" id="delete-title">Elimina Campagna</h2>
+      <p class="modal-body-text">Stai per eliminare <strong id="delete-name"></strong>. Questa azione è <em>permanente</em>.</p>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="delete-cancel">Annulla</button>
+        <button class="btn-danger" id="delete-confirm">Elimina per sempre</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <script src="/static/js/campaigns.js"></script>
+</body>
 </html>

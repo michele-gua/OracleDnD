@@ -1,5 +1,178 @@
 <!DOCTYPE html>
 <html lang="it">
-<head><meta charset="UTF-8"><title>D&D DM — manage</title></head>
-<body><h1>manage — placeholder (Part 2)</h1></body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oracle DnD — Gestione Campagna</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/main.css">
+  <link rel="stylesheet" href="/static/css/manage.css">
+</head>
+<body>
+  <div class="parchment-overlay" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <a href="/campaigns" class="back-link" aria-label="Torna all'hub campagne">← Hub</a>
+    <div class="header-center">
+      <h1 class="site-title" id="page-title">Gestione Campagna</h1>
+      <p class="site-subtitle" id="page-subtitle">Caricamento…</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-new" id="btn-play">▶ Gioca</button>
+    </div>
+  </header>
+
+  <div class="rune-divider" aria-hidden="true"><span>᛭</span><span>᛭</span><span>᛭</span></div>
+
+  <main class="manage-main">
+
+    <!-- Sidebar -->
+    <aside class="manage-sidebar">
+      <nav class="manage-nav" aria-label="Sezioni campagna">
+        <button class="nav-tab active" data-tab="overview">📖 Panoramica</button>
+        <button class="nav-tab" data-tab="characters">⚔️ Personaggi</button>
+        <button class="nav-tab" data-tab="sessions">🕯 Sessioni</button>
+        <button class="nav-tab" data-tab="world">🌍 Mondo</button>
+        <button class="nav-tab" data-tab="npcs">👥 NPC</button>
+        <button class="nav-tab" data-tab="settings">⚙️ Impostazioni</button>
+      </nav>
+
+      <!-- Quick stats -->
+      <div class="sidebar-stats" id="sidebar-stats">
+        <div class="sstat">
+          <span class="sstat-val" id="stat-sessions">—</span>
+          <span class="sstat-label">Sessioni</span>
+        </div>
+        <div class="sstat">
+          <span class="sstat-val" id="stat-hours">—</span>
+          <span class="sstat-label">Ore di gioco</span>
+        </div>
+        <div class="sstat">
+          <span class="sstat-val" id="stat-chars">—</span>
+          <span class="sstat-label">Personaggi</span>
+        </div>
+      </div>
+
+      <div class="sidebar-meta" id="sidebar-meta"></div>
+    </aside>
+
+    <!-- Content area -->
+    <section class="manage-content">
+
+      <!-- TAB: Overview -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="panel-header">
+          <h2 class="panel-title">Panoramica</h2>
+          <button class="btn-ghost btn-sm" id="btn-edit-overview">✏ Modifica</button>
+        </div>
+        <div id="overview-view">
+          <div class="overview-hero" id="overview-hero">
+            <div class="loading-runes"><span>ᚠ</span><span>ᚢ</span><span>ᚦ</span><span>ᚨ</span><span>ᚱ</span></div>
+          </div>
+          <div class="overview-body" id="overview-body"></div>
+        </div>
+        <div id="overview-edit" hidden>
+          <div class="form-group">
+            <label class="form-label" for="edit-name">Nome campagna</label>
+            <input type="text" id="edit-name" class="form-input" maxlength="80">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-world">Nome del mondo</label>
+            <input type="text" id="edit-world" class="form-input" maxlength="80">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="edit-notes">Note</label>
+            <textarea id="edit-notes" class="form-input form-textarea" rows="5"></textarea>
+          </div>
+          <div class="edit-actions">
+            <button class="btn-ghost" id="btn-cancel-edit">Annulla</button>
+            <button class="btn-primary" id="btn-save-edit">Salva modifiche</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB: Characters -->
+      <div class="tab-panel" id="tab-characters" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title">Personaggi</h2>
+          <a href="#" class="btn-new btn-sm" id="btn-new-char">+ Nuovo personaggio</a>
+        </div>
+        <div class="char-list" id="char-list">
+          <p class="placeholder-text">Nessun personaggio in questa campagna.<br>Creane uno per iniziare l'avventura.</p>
+        </div>
+      </div>
+
+      <!-- TAB: Sessions -->
+      <div class="tab-panel" id="tab-sessions" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title">Cronologia Sessioni</h2>
+          <button class="btn-new btn-sm" id="btn-new-session">+ Nuova sessione</button>
+        </div>
+        <div class="session-list" id="session-list">
+          <p class="placeholder-text">Nessuna sessione registrata.</p>
+        </div>
+      </div>
+
+      <!-- TAB: World -->
+      <div class="tab-panel" id="tab-world" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title">Codex del Mondo</h2>
+        </div>
+        <div class="world-placeholder">
+          <div class="placeholder-icon">🌍</div>
+          <p class="placeholder-text">Il Codex del Mondo verrà generato dall'AI nella Parte 3.<br>Conterrà fazioni, luoghi, storia e lore.</p>
+        </div>
+      </div>
+
+      <!-- TAB: NPCs -->
+      <div class="tab-panel" id="tab-npcs" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title">NPC Incontrati</h2>
+        </div>
+        <div class="world-placeholder">
+          <div class="placeholder-icon">👥</div>
+          <p class="placeholder-text">Gli NPC appariranno qui man mano che vengono incontrati durante le sessioni.</p>
+        </div>
+      </div>
+
+      <!-- TAB: Settings -->
+      <div class="tab-panel" id="tab-settings" hidden>
+        <div class="panel-header">
+          <h2 class="panel-title">Impostazioni Campagna</h2>
+        </div>
+        <div class="settings-grid">
+          <div class="setting-block">
+            <h3 class="setting-title">Stato campagna</h3>
+            <div class="setting-actions">
+              <button class="btn-ghost" id="btn-complete">✔ Segna come completata</button>
+              <button class="btn-ghost" id="btn-archive">📁 Archivia</button>
+            </div>
+          </div>
+          <div class="setting-block danger-zone">
+            <h3 class="setting-title">Zona di pericolo</h3>
+            <p class="setting-desc">Queste azioni sono irreversibili.</p>
+            <button class="btn-danger" id="btn-delete">🗑 Elimina campagna</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Modal: Elimina -->
+  <div class="modal-backdrop" id="modal-delete" hidden role="dialog" aria-modal="true">
+    <div class="modal modal-sm">
+      <h2 class="modal-title">Elimina Campagna</h2>
+      <p class="modal-body-text">Stai per eliminare <strong id="delete-name"></strong>. Azione <em>permanente</em>.</p>
+      <div class="modal-footer">
+        <button class="btn-ghost" id="delete-cancel">Annulla</button>
+        <button class="btn-danger" id="delete-confirm">Elimina per sempre</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+  <script src="/static/js/manage.js"></script>
+</body>
 </html>

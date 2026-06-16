@@ -1,0 +1,19 @@
+{
+  "port": "8080",
+  "ollama_url": "http://localhost:11434",
+  "default_model": "deepseek-r1:8b",
+  "language": "it",
+  "piper_path": "",
+  "tts_enabled": false,
+  "context_windows": {
+    "deepseek-r1:8b":    8192,
+    "gpt-oss:120b":      32768,
+    "qwen3-coder:30b":   16384,
+    "llava:latest":      4096
+  },
+  "context_reserve_ratio": 0.80,
+  "max_history_messages": 20,
+  "summary_max_tokens": 500,
+  "data_dir": "./data",
+  "rulesets_dir": "./rulesets"
+}

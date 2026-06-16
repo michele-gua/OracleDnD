@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/dnd-dm/internal/ai"
+	"github.com/dnd-dm/internal/campaign"
 	"github.com/dnd-dm/internal/config"
 	"github.com/dnd-dm/internal/dice"
 	"github.com/dnd-dm/internal/handlers"
@@ -16,16 +17,15 @@ func main() {
 	cfgPath := flag.String("config", "config.json", "path to config.json")
 	flag.Parse()
 
-	// --- Load config ---
 	cfg, err := config.Load(*cfgPath)
 	if err != nil {
 		log.Fatalf("config: %v", err)
 	}
 
-	// --- Wire dependencies ---
-	aiClient := ai.New(cfg.OllamaURL)
-	sessionMgr := session.NewManager(cfg.DataDir, cfg.MaxHistoryMessages)
-	diceRoller := dice.New()
+	aiClient    := ai.New(cfg.OllamaURL)
+	sessionMgr  := session.NewManager(cfg.DataDir, cfg.MaxHistoryMessages)
+	diceRoller  := dice.New()
+	campaignMgr := campaign.NewManager(cfg.DataDir)
 
 	deps := &handlers.Deps{
 		Cfg:      cfg,
@@ -34,34 +34,42 @@ func main() {
 		Dice:     diceRoller,
 	}
 
-	// --- Router ---
 	mux := http.NewServeMux()
 
-	// Static files & templates (served from web/ — populated in Part 2)
+	// Static
 	mux.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 
-	// Page routes (placeholder handlers — full templates in Part 2)
-	mux.HandleFunc("GET /", pageHandler("web/templates/campaigns.html"))
-	mux.HandleFunc("GET /campaigns", pageHandler("web/templates/campaigns.html"))
-	mux.HandleFunc("GET /campaign/{name}/manage", pageHandler("web/templates/manage.html"))
-	mux.HandleFunc("GET /campaign/{name}/export", pageHandler("web/templates/export.html"))
-	mux.HandleFunc("GET /import", pageHandler("web/templates/import.html"))
-	mux.HandleFunc("GET /character/new", pageHandler("web/templates/character_new.html"))
-	mux.HandleFunc("GET /character/{id}", pageHandler("web/templates/character.html"))
-	mux.HandleFunc("GET /character/import", pageHandler("web/templates/character_import.html"))
-	mux.HandleFunc("GET /session/new", pageHandler("web/templates/session_new.html"))
-	mux.HandleFunc("GET /session/{id}", pageHandler("web/templates/session.html"))
+	// Page routes
+	mux.HandleFunc("GET /",                         pageHandler("web/templates/campaigns.html"))
+	mux.HandleFunc("GET /campaigns",                pageHandler("web/templates/campaigns.html"))
+	mux.HandleFunc("GET /campaign/{name}/manage",   pageHandler("web/templates/manage.html"))
+	mux.HandleFunc("GET /campaign/{name}/export",   pageHandler("web/templates/export.html"))
+	mux.HandleFunc("GET /import",                   pageHandler("web/templates/import.html"))
+	mux.HandleFunc("GET /character/new",            pageHandler("web/templates/character_new.html"))
+	mux.HandleFunc("GET /character/{id}",           pageHandler("web/templates/character.html"))
+	mux.HandleFunc("GET /character/import",         pageHandler("web/templates/character_import.html"))
+	mux.HandleFunc("GET /session/new",              pageHandler("web/templates/session_new.html"))
+	mux.HandleFunc("GET /session/{id}",             pageHandler("web/templates/session.html"))
+
+	// Campaign API
+	mux.HandleFunc("GET /api/campaign/list",                handlers.CampaignListHandler(campaignMgr))
+	mux.HandleFunc("POST /api/campaign/create",             handlers.CampaignCreateHandler(campaignMgr))
+	mux.HandleFunc("GET /api/campaign/{name}",              handlers.CampaignGetHandler(campaignMgr))
+	mux.HandleFunc("PATCH /api/campaign/{name}",            handlers.CampaignUpdateHandler(campaignMgr))
+	mux.HandleFunc("DELETE /api/campaign/{name}",           handlers.CampaignDeleteHandler(campaignMgr))
+	mux.HandleFunc("POST /api/campaign/{name}/archive",     handlers.CampaignArchiveHandler(campaignMgr))
+	mux.HandleFunc("POST /api/campaign/{name}/complete",    handlers.CampaignCompleteHandler(campaignMgr))
 
 	// AI & chat
-	mux.HandleFunc("POST /api/chat", handlers.ChatHandler(deps))
-	mux.HandleFunc("GET /api/models", handlers.ModelsHandler(deps))
+	mux.HandleFunc("POST /api/chat",         handlers.ChatHandler(deps))
+	mux.HandleFunc("GET /api/models",        handlers.ModelsHandler(deps))
 	mux.HandleFunc("POST /api/model/select", handlers.ModelSelectHandler(deps))
 
 	// Dice
-	mux.HandleFunc("POST /api/roll", handlers.RollHandler(deps))
+	mux.HandleFunc("POST /api/roll",        handlers.RollHandler(deps))
 	mux.HandleFunc("GET /api/roll/suggest", handlers.SuggestRollHandler(deps))
 
-	// Health check
+	// Health
 	mux.HandleFunc("GET /api/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte(`{"status":"ok"}`))
@@ -76,7 +84,6 @@ func main() {
 	}
 }
 
-// pageHandler serves a static HTML file (placeholder for Part 2 templates).
 func pageHandler(path string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, path)
